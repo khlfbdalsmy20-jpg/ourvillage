@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة أهل بلدنا الرقمية</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <style>
+        body { background-color: #f4f7f6; font-family: sans-serif; }
+        .hero-section { background: linear-gradient(135deg, #2ea85a, #117a3a); color: white; padding: 30px 20px; border-radius: 0 0 25px 25px; }
+        .section-title { border-right: 5px solid #2ea85a; padding-right: 12px; margin-top: 35px; margin-bottom: 20px; font-weight: bold; }
+        .card { border: none; border-radius: 15px; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+    </style>
+</head>
+<body>
+
+    <div class="container hero-section shadow mb-4">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div class="d-flex align-items-center order-md-1 my-2">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Abdelsamee" alt="Profile" class="rounded-circle border border-2 border-white shadow bg-light me-3" width="55" height="55">
+                <div class="text-start">
+                    <small class="d-block text-white-50">المطور المسؤول،</small>
+                    <h5 class="m-0 fw-bold text-warning">عبد السميع خلف 01129218336</h5>
+                </div>
+            </div>
+            <div class="mx-auto text-center order-md-2 my-2 my-md-0">
+                <h1 class="fw-bold m-0">منصة أهل دار السلام الخيرية🏡</h1>
+                <p class="m-0 text-white-50 small">تكافل، خدمات، وطوارئ قريتنا في شاشة واحدة</p>
+            </div>
+            <div class="order-md-3 d-flex gap-2 my-2">
+                <button class="btn btn-warning btn-sm fw-bold px-3 py-2 shadow-sm text-dark" data-bs-toggle="modal" data-bs-target="#chooseSectionModal">➕ أضف خدمة أو علاج جديد</button>
+                <a href="/admin/" target="_blank" class="btn btn-outline-light btn-sm fw-bold px-2 py-2 shadow-sm">🔒 لوحة التحكم</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pb-5">
+        
+        <h3 class="section-title text-danger">🚨 الحالات الحرجة (متبرعي الدم المستعدين)</h3>
+        <div class="row">
+            {% for donor in donors %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm border-top border-danger border-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="card-title fw-bold m-0 text-dark">{{ donor.name }}</h5>
+                            <span class="badge bg-danger fs-6">فصيلة {{ donor.blood_group }}</span>
+                        </div>
+                        <p class="card-text text-muted mb-1">📞 التليفون: <strong>{{ donor.phone }}</strong></p>
+                        <p class="card-text text-muted mb-3">📍 المنطقة: {{ donor.area }}</p>
+                        <a href="{% url 'complete_blood' donor.pk %}" class="btn btn-sm btn-outline-danger w-100 fw-bold">✔️ تم التبرع (حذف)</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center my-2"><p class="text-muted small">لا يوجد متبرعين مسجلين حالياً.</p></div>
+            {% endfor %}
+        </div>
+
+        <h3 class="section-title text-primary">💊 الصيدلة والرعاية الصحية والأجهزة الطبية</h3>
+        <div class="row">
+            {% for med in medical_services %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm border-top border-primary border-4">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold text-dark">📦 {{ med.title }}</h5>
+                        <p class="card-text text-muted mb-2">{{ med.description }}</p>
+                        <p class="card-text text-dark small mb-3">📞 للتواصل: <strong>{{ med.phone }}</strong></p>
+                        <a href="{% url 'complete_medical' med.pk %}" class="btn btn-sm btn-outline-primary w-100 fw-bold">✔️ تمت الخدمة (حذف)</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center my-2"><p class="text-muted small">لا توجد خدمات طبية أو أدوية معروضة حالياً.</p></div>
+            {% endfor %}
+        </div>
+
+        <h3 class="section-title text-success">🚗 المواصلات والرحلات اليومية للمدينة</h3>
+        <div class="row">
+            {% for trip in trips %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm border-top border-success border-4">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold text-dark">🚗 كابتن: {{ trip.driver_name }}</h5>
+                        <p class="card-text text-muted mb-1">📍 خط السير: <strong>{{ trip.destination }}</strong></p>
+                        <p class="card-text text-muted mb-2">⏰ ميعاد التحرك: {{ trip.time }}</p>
+                        <p class="card-text text-dark small mb-3">📞 للتواصل: <strong>{{ trip.phone }}</strong></p>
+                        <a href="{% url 'complete_transport' trip.pk %}" class="btn btn-sm btn-outline-success w-100 fw-bold">✔️ اكتملت الرحلة (حذف)</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center my-2"><p class="text-muted small">لا توجد رحلات مسجلة اليوم.</p></div>
+            {% endfor %}
+        </div>
+
+        <h3 class="section-title text-secondary">🛠️ خدمات الصيانة والصنايعية بالقرية</h3>
+        <div class="row">
+            {% for craft in crafts %}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm border-top border-secondary border-4">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold text-dark">🔧 الفني: {{ craft.worker_name }}</h5>
+                        <p class="card-text text-muted mb-1">💼 المهنة: <span class="badge bg-secondary">{{ craft.craft_type }}</span></p>
+                        <p class="card-text text-muted mb-2">📍 مكان التواجد: {{ craft.area }}</p>
+                        <p class="card-text text-dark small mb-3">📞 للتواصل: <strong>{{ craft.phone }}</strong></p>
+                        <a href="{% url 'complete_craft' craft.pk %}" class="btn btn-sm btn-outline-secondary w-100 fw-bold">✔️ حذف الفني</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center my-2"><p class="text-muted small">لا توجد خدمات صيانة معروضة حالياً.</p></div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="modal fade" id="chooseSectionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title">إلى أي قسم تريد إضافة الخدمة؟</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body d-grid gap-2 p-4">
+                    <button class="btn btn-danger fw-bold py-3" data-bs-toggle="modal" data-bs-target="#bloodModal" data-bs-dismiss="modal">🚨 تسجيل متبرع دم جديد</button>
+                    <button class="btn btn-primary fw-bold py-3" data-bs-toggle="modal" data-bs-target="#medicalModal" data-bs-dismiss="modal">💊 إضافة دواء أو جهاز طبي</button>
+                    <button class="btn btn-success fw-bold py-3" data-bs-toggle="modal" data-bs-target="#transportModal" data-bs-dismiss="modal">🚗 إضافة رحلة مواصلات</button>
+                    <button class="btn btn-secondary fw-bold py-3" data-bs-toggle="modal" data-bs-target="#craftModal" data-bs-dismiss="modal">🛠️ تسجيل بيانات صنايعي / فني</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="bloodModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-danger text-white"><h5 class="modal-title">🩸 تسجيل متبرع دم جديد</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="{% url 'add_service_outside' %}">{% csrf_token %}
+                <input type="hidden" name="section_type" value="blood">
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">الاسم بالكامل</label><input type="text" name="name" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">فصيلة الدم</label><select name="blood_group" class="form-select"><option value="A+">A+</option><option value="O+">O+</option><option value="B+">B+</option><option value="AB+">AB+</option></select></div>
+                    <div class="mb-3"><label class="form-label">رقم التليفون</label><input type="text" name="phone" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">المنطقة</label><input type="text" name="area" class="form-control" required></div>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-danger">إضافة ونشر</button></div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="medicalModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-primary text-white"><h5 class="modal-title">💊 إضافة خدمة طبية أو دواء متاح</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="{% url 'add_service_outside' %}">{% csrf_token %}
+                <input type="hidden" name="section_type" value="medical">
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">عنوان الخدمة أو الدواء</label><input type="text" name="title" class="form-control" placeholder="مثال: جهاز تنفس صناعي متوفر، دواء ناقص" required></div>
+                    <div class="mb-3"><label class="form-label">التفاصيل والشروط</label><textarea name="description" class="form-control" rows="3" required></textarea></div>
+                    <div class="mb-3"><label class="form-label">رقم التواصل</label><input type="text" name="phone" class="form-control" required></div>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-primary">إضافة ونشر</button></div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="transportModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-success text-white"><h5 class="modal-title">🚗 إضافة رحلة مواصلات جديدة</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="{% url 'add_service_outside' %}">{% csrf_token %}
+                <input type="hidden" name="section_type" value="transport">
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">اسم السائق / صاحب السيارة</label><input type="text" name="driver_name" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">خط السير / الوجهة</label><input type="text" name="destination" class="form-control" placeholder="مثال: من دار السلام إلى سوهاج" required></div>
+                    <div class="mb-3"><label class="form-label">ميعاد التحرك</label><input type="text" name="time" class="form-control" placeholder="مثال: 08:00 صباحاً" required></div>
+                    <div class="mb-3"><label class="form-label">رقم التليفون</label><input type="text" name="phone" class="form-control" required></div>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-success">إضافة ونشر</button></div>
+            </form>
+        </div></div>
+    </div>
+
+    <div class="modal fade" id="craftModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog"><div class="modal-content">
+            <div class="modal-header bg-secondary text-white"><h5 class="modal-title">🛠️ تسجيل فني أو صنايعي بالقرية</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
+            <form method="POST" action="{% url 'add_service_outside' %}">{% csrf_token %}
+                <input type="hidden" name="section_type" value="craft">
+                <div class="modal-body">
+                    <div class="mb-3"><label class="form-label">اسم الفني</label><input type="text" name="worker_name" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">التخصص / المهنة</label><input type="text" name="craft_type" class="form-control" placeholder="مثال: سباك، كهربائي، نقاش" required></div>
+                    <div class="mb-3"><label class="form-label">رقم التليفون</label><input type="text" name="phone" class="form-control" required></div>
+                    <div class="mb-3"><label class="form-label">منطقة التواجد</label><input type="text" name="area" class="form-control" required></div>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn btn-secondary">إضافة ونشر</button></div>
+            </form>
+        </div></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
